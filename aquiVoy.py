@@ -193,11 +193,11 @@ def generateGraphs(bandera, texto):
         SCREEN.blit(imagen, (200,100))
         dibujar(cambiarValorConexion, "cambiar valor conexion")
         manager2.draw_ui(SCREEN)
-        i=0
         for item in grafo.vertices:
-            if i < len(listaPuntos):
                 dibujarPuntico(grafo.vertices[item].x, grafo.vertices[item].y)
-        print(texto, primeraCiudad, segundaCiudad)
+        if listaGrafos != None:
+            print(listaGrafos)
+            unirPuntos(listaGrafos)
         if texto != "" and primeraCiudad >-1 and segundaCiudad >-1:
             #la info que me llegue de ciudad, de los dropbox
             i=0
@@ -214,9 +214,13 @@ def generateGraphs(bandera, texto):
                             for vecino in grafo.vertices[item].vecinos:
                                 if vecino[0] == aux:
                                     vecino[1] = int(texto)
+                                    break
                             print (grafo.vertices[item].vecinos)
                         i+=1
-        if ciudadOrigen != None and ciudadDestino != None:
+        
+	                
+def hacerDijkstra(ciudadOrigen, ciudadDestino):
+    if ciudadOrigen != None and ciudadDestino != None:
             print(ciudadOrigen, ciudadDestino)
             i =0
             aux = None
@@ -228,13 +232,11 @@ def generateGraphs(bandera, texto):
             i=0
             for item in grafo.vertices:
                 if ciudadOrigen == i:
+                    eliminarRepetidos(grafo.vertices[item].vecinos)
                     grafo.dijkstra(item)
-                    print(grafo.vertices[item].vecinos)
                     print(item, aux)
-                    print(grafo.camino(item,aux))
-                    break
+                    return grafo.camino(item,aux)
                 i+=1
-	                
 
                    
 
@@ -275,7 +277,12 @@ def generateGraphs(bandera, texto):
       #  dibujarPuntico(480,140)
         #villavicencio
       #  dibujarPuntico(500,310)
-        
+    
+def eliminarRepetidos(lista):
+    for item in lista:
+        for item2 in lista:
+            if item [0] == item2[0]:
+                lista.remove(item2)
 
 fuenteGrande =font.SysFont('Roboto' ,100)
 def dibujarPuntico(x,y):
@@ -399,6 +406,23 @@ def dibujarNodo(i, j):
     pygame.draw.circle (SCREEN, "white", (i+dimension+(radio/2),j+(radio/2)),radio, 5)
 textocambio = ""
 
+def unirPuntos(lista):
+    for i in range(len(lista[0])-1):
+        tupla = buscarVertice(lista[0][i])
+        tupla2 = buscarVertice(lista[0][i+1])
+        pygame.draw.line(SCREEN, "black", tupla, tupla2, width=5)
+
+
+def buscarVertice(elemento):
+    tupla = ()
+    for item in grafo.vertices:
+        if elemento == item:
+            tupla = (grafo.vertices[item].x+10, grafo.vertices[item].y+50)
+            return tupla 
+
+    
+        
+
 
 #INTERFAZ 
 def dibujar(button, word):
@@ -426,6 +450,7 @@ primeraCiudad= None
 segundaCiudad= None
 ciudadOrigen = None
 ciudadDestino = None
+listaGrafos = None 
 while True:
     SCREEN.fill("black")
     eventos = event.get()
@@ -480,6 +505,8 @@ while True:
                     if destino >= 0:
                         ddestino.main = ddestino.options[destino]
                         ciudadDestino = destino
+                        if ciudadOrigen != None:
+                            listaGrafos =hacerDijkstra(ciudadOrigen, ciudadDestino)
                     if ci1 >= 0:
                         ciudad1.main = ciudad1.options[ci1]
                         primeraCiudad= ci1

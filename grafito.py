@@ -114,26 +114,29 @@ class Grafica:
 				actual = self.minimo(noVisitados)
 		else:
 			return False
-'''
 
+'''
 class main:
 	g = Grafica()
 	g.read_json()
-	i = 0
-	aux = None
-	for item in g.vertices:
-		if 1 == i:
-			aux= item
-			break
-		i +=1
-	i=0
-	for item in g.vertices:
-		if i == 0:
-			print(g.dijkstra(item))
-			print(item, aux)
-			print(g.camino(item, aux))
-			break
-		i+=1 '''
+	while True:
+		i = 0
+		aux = None
+		for item in g.vertices:
+			print(g.vertices[item])
+			if 2 == i:
+				aux= item
+				break
+			i +=1
+		i=0
+		for item in g.vertices:
+			if 3 == i:
+				print(g.dijkstra(item))
+				print(item, aux)
+				print(g.camino(item, aux))
+				break
+			i+=1 
+			'''
 '''	print("\n\nLa ruta más rápida por Dijkstra junto con su costo es:")
 	print(g.dijkstra('ADZ'))
 	print(g.camino('ADZ','AXM'))'''

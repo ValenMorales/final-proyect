@@ -1,7 +1,7 @@
 [
   {
     "name": "San Andrés",
-    "id": "ADZ",
+    "code": "ADZ",
     "destinations": [
       "AXM",
       "BAQ",
@@ -23,7 +23,7 @@
   },
   {
     "name": "Armenia",
-    "id": "AXM",
+    "code": "AXM",
     "destinations": [
       "ADZ",
       "BAQ",
@@ -43,7 +43,7 @@
   },
   {
     "name": "Barranquilla",
-    "id": "BAQ",
+    "code": "BAQ",
     "destinations": [
       "ADZ",
       "AXM",
@@ -65,7 +65,7 @@
   },
   {
     "name": "Bucaramanga",
-    "id": "BGA",
+    "code": "BGA",
     "destinations": [
       "ADZ",
       "AXM",
@@ -87,7 +87,7 @@
   },
   {
     "name": "Bogotá",
-    "id": "BOG",
+    "code": "BOG",
     "destinations": [
       "ADZ",
       "AXM",
@@ -109,7 +109,7 @@
   },
   {
     "name": "Cali",
-    "id": "CLO",
+    "code": "CLO",
     "destinations": [
       "ADZ",
       "AXM",
@@ -131,7 +131,7 @@
   },
   {
     "name": "Cartagena",
-    "id": "CTG",
+    "code": "CTG",
     "destinations": [
       "ADZ",
       "AXM",
@@ -153,7 +153,7 @@
   },
   {
     "name": "Cúcuta",
-    "id": "CUC",
+    "code": "CUC",
     "destinations": [
       "ADZ",
       "AXM",
@@ -175,7 +175,7 @@
   },
   {
     "name": "Leticia",
-    "id": "LET",
+    "code": "LET",
     "destinations": [
       "ADZ",
       "BAQ",
@@ -192,7 +192,7 @@
   },
   {
     "name": "Medellín",
-    "id": "MDE",
+    "code": "MDE",
     "destinations": [
       "ADZ",
       "AXM",
@@ -214,7 +214,7 @@
   },
   {
     "name": "Monteria",
-    "id": "MTR",
+    "code": "MTR",
     "destinations": [
       "ADZ",
       "AXM",
@@ -236,7 +236,7 @@
   },
   {
     "name": "Neiva",
-    "id": "NVA",
+    "code": "NVA",
     "destinations": [
       "ADZ",
       "AXM",
@@ -257,7 +257,7 @@
   },
   {
     "name": "Pereira",
-    "id": "PEI",
+    "code": "PEI",
     "destinations": [
       "ADZ",
       "BAQ",
@@ -278,7 +278,7 @@
   },
   {
     "name": "Pasto",
-    "id": "PSO",
+    "code": "PSO",
     "destinations": [
       "ADZ",
       "AXM",
@@ -299,7 +299,7 @@
   },
   {
     "name": "Riohacha",
-    "id": "RCH",
+    "code": "RCH",
     "destinations": [
       "ADZ",
       "AXM",
@@ -322,7 +322,7 @@
   },
   {
     "name": "Santa Marta",
-    "id": "SMR",
+    "code": "SMR",
     "destinations": [
       "ADZ",
       "AXM",
@@ -344,7 +344,7 @@
   },
   {
     "name": "Valledupar",
-    "id": "VUP",
+    "code": "VUP",
     "destinations": [
       "ADZ",
       "AXM",
@@ -365,7 +365,7 @@
   },
   {
     "name": "Villavicencio",
-    "id": "VVC",
+    "code": "VVC",
     "destinations": [
       "ADZ",
       "AXM",

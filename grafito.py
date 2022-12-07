@@ -21,38 +21,30 @@ class Grafica:
 
 	def __init__(self):
 		self.vertices = {}
+
 	def read_json(self):
 		with open('ciudades.json') as data:
 			ciudades= json.load(data)
 			for ciudad in ciudades:
-				self.agregarVertice(ciudad.get('id'), ciudad.get('name'))
+				self.agregarVertice(ciudad.get('code'), ciudad.get('name'))
 			for ciudad in ciudades:
 				for destino in ciudad.get('destinations'):
-					self.agregarArista(ciudad.get('id'),destino, random.randint(0,50))
+					self.agregarArista(ciudad.get('code'),destino, random.randint(1,50))
 	
+	
+                	
 	def agregarVertice(self, id, name):
-		"""Método que agrega vértices, recibiendo el índice y la heuristica (para A* puede que no se reciba) revisando si éste no existe en el diccionario
-		de vértices"""
 		if id not in self.vertices:
 			self.vertices[id] = Vertice(id, name)
 
 	def agregarArista(self, a, b, p):
-		"""Método que agrega aristas, recibiendo el índice de dos vertices y revisando si existen estos en la lista
-		de vertices, además de recibir el peso de la arista , el cual se asigna a ambos vértices por medio del método
-		agregar vecino"""
 		if a in self.vertices and b in self.vertices:
-			self.vertices[a].agregarVecino(b, p)
-			self.vertices[b].agregarVecino(a, p)
-
-	def imprimirGrafica(self):
-		"""Método que imprime el gráfo completo arista por arista con todas sus características(incluye heurística)"""
-		for v in self.vertices:
-			print("El costo del vértice "+str(self.vertices[v].id)+" es " + str(
-				self.vertices[v].costo)+" llegando desde "+str(self.vertices[v].padre)+str(self.vertices[v].vecinos))
-			
+			if b not in self.vertices[a].vecinos:
+				self.vertices[a].agregarVecino(b, p)
+				self.vertices[b].agregarVecino(a, p)
 
 	def camino(self, a, b):
-		"""Método que va guardando en la lista llamada 'camino' los nodos en el orden que sean visitados y actualizando dicha
+		"""Método que va guardando los nodos en el orden que sean visitados y actualizando dicha
 		lista con los vértices con el menor costo"""
 		camino = []
 		actual = b
@@ -62,9 +54,7 @@ class Grafica:
 		return [camino, self.vertices[b].costo]
 
 	def minimo(self, l):
-		"""Método que recibe la lista de los vertices no visitados, revisa si su longitud es mayor a cero(indica que
-		aún hay vértices sin visitar), y realiza comparaciones de los costos de cada vértice en ésta lista para encontrar
-		el de menor costo"""
+		#de la lista de los vertices no visitados, revisa si hay vertices por visitar y cual es el de menor costo 
 		if len(l) > 0:
 			m = self.vertices[l[0]].costo
 			v = l[0]
@@ -114,30 +104,4 @@ class Grafica:
 				actual = self.minimo(noVisitados)
 		else:
 			return False
-
-'''
-class main:
-	g = Grafica()
-	g.read_json()
-	while True:
-		i = 0
-		aux = None
-		for item in g.vertices:
-			print(g.vertices[item])
-			if 2 == i:
-				aux= item
-				break
-			i +=1
-		i=0
-		for item in g.vertices:
-			if 3 == i:
-				print(g.dijkstra(item))
-				print(item, aux)
-				print(g.camino(item, aux))
-				break
-			i+=1 
-			'''
-'''	print("\n\nLa ruta más rápida por Dijkstra junto con su costo es:")
-	print(g.dijkstra('ADZ'))
-	print(g.camino('ADZ','AXM'))'''
 

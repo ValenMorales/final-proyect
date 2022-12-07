@@ -11,19 +11,7 @@ from dropdown import DropDown
 from grafito import *
 grafo = Grafica()
 grafo.read_json()
-listica = []
-
-listaPuntos = [(250,110),(395,285), (450,110), (470,230), (450,290), (370,310), (410,120), (495,170),(590,520),(420,210),(390,160),(400,270),(390,270),(330,380),(500,90),(450,110),(480,140),(500,310)]
-i=0
-for item in grafo.vertices:
-    if i < len(listaPuntos):
-        grafo.vertices[item].x = listaPuntos[i][0]
-        grafo.vertices[item].y = listaPuntos[i][1]
-    i+=1
-
-
-
-        
+listica = []    
 combo = None 
 main_window= None
 clock= time.Clock()
@@ -36,18 +24,28 @@ grafos = Rect (800, 600,150,50)
 añadir = Rect (400, 250, 150, 50)
 nuevoNodo = Rect (800, 100, 150, 50)
 rect_nodo =pygame.Rect((650, 180), (300, 50))
-pila4 = Pila(pygame.Rect((0, 0), (250, 650)))
+pila4 = Pila(pygame.Rect((90, 0), (210, 650)))
 pila3 = Pila(pygame.Rect((250, 0), (470, 650)))
 pila2= Pila(pygame.Rect((470, 0), (630, 650)))
 pila = Pila(pygame.Rect((630, 0), (1000, 650)))
 seleccionarCiudades = Rect((150,50),(150,50))
 cambiarValorConexion = pygame.Rect(800, 50, 400, 30)
 cambio = Rect(850,150,150, 50)
+verConnecciones = Rect(850,400,200,50)
 
 #banderas 
 bandera= False
 
 init()
+
+# asignar puntos en el mapa para las ciudades 
+listaPuntos = [(250,110),(395,285), (450,110), (470,230), (450,290), (370,310), (410,120), (495,170),(590,520),(420,210),(390,160),(400,270),(390,270),(330,380),(500,90),(450,110),(480,140),(500,310)]
+i=0
+for item in grafo.vertices:
+    if i < len(listaPuntos):
+        grafo.vertices[item].x = listaPuntos[i][0]
+        grafo.vertices[item].y = listaPuntos[i][1]
+    i+=1
 
 dropRecorridos = DropDown(["white", "red"],
                           ["white", "red"],
@@ -69,7 +67,7 @@ ddestino = DropDown(
 ciudad1 = DropDown(
     ["green", "red"],
     ["white", "white"],
-    850, 100, 150, 30, 
+    1150, 100, 150, 30, 
     pygame.font.SysFont(None, 20), 
     "ciudad 1", ["San Andres", "Armenia", "Barranquilla","Bucaramanga","Bogota","Cali","Cartagena","Cucuta","Leticia","Medellin","Monteria","Neira","Pasto","Riohacha","Santa Marta","Valledupar","Villavicencio"])
 ciudad2 = DropDown(
@@ -101,6 +99,10 @@ miFuente = pygame.font.Font(None, 50)
 carpeta_juego = os.path.dirname(__file__)
 carpeta_imagenes = os.path.join(carpeta_juego, "imagenes")
 arbol = binary_search_tree()
+global primeraCiudad
+global segundaCiudad
+primeraCiudad = None
+segundaCiudad = None
 
       #CARTAS
       
@@ -187,17 +189,23 @@ def showComboOrden():
     button.place(x=250, y=10)
     main_window.mainloop()
     
-def generateGraphs(bandera, texto):
+
+#GRAFOS
+def generateGraphs(bandera, texto, banderaConecciones):
     if bandera:
         imagen =pygame.transform.scale(pygame.image.load("imagenes/Mapa.jpg"), (600,500))
         SCREEN.blit(imagen, (200,100))
         dibujar(cambiarValorConexion, "cambiar valor conexion")
         manager2.draw_ui(SCREEN)
+        draw_button(SCREEN, verConnecciones, "verConnecciones")
         for item in grafo.vertices:
                 dibujarPuntico(grafo.vertices[item].x, grafo.vertices[item].y)
         if listaGrafos != None:
+            banderaConecciones = False 
             print(listaGrafos)
             unirPuntos(listaGrafos)
+        if banderaConecciones:
+            mostrarConexiones()
         if texto != "" and primeraCiudad >-1 and segundaCiudad >-1:
             #la info que me llegue de ciudad, de los dropbox
             i=0
@@ -221,6 +229,7 @@ def generateGraphs(bandera, texto):
 	                
 def hacerDijkstra(ciudadOrigen, ciudadDestino):
     if ciudadOrigen != None and ciudadDestino != None:
+            global grafo 
             print(ciudadOrigen, ciudadDestino)
             i =0
             aux = None
@@ -235,11 +244,25 @@ def hacerDijkstra(ciudadOrigen, ciudadDestino):
                     eliminarRepetidos(grafo.vertices[item].vecinos)
                     grafo.dijkstra(item)
                     print(item, aux)
-                    return grafo.camino(item,aux)
+                    respuesta= grafo.camino(item,aux)
+                    respuesta2 = grafo.camino('ADZ', 'BGA')
+                    print(respuesta, respuesta2)
+                    return respuesta 
                 i+=1
 
-                   
+def unirPuntos(lista):
+    for i in range(len(lista[0])-1):
+        tupla = buscarVertice(lista[0][i])
+        tupla2 = buscarVertice(lista[0][i+1])
+        pygame.draw.line(SCREEN, "black", tupla, tupla2, width=5)
 
+def buscarVertice(elemento):
+    tupla = ()
+    for item in grafo.vertices:
+        if elemento == item:
+            tupla = (grafo.vertices[item].x+10, grafo.vertices[item].y+50)
+            return tupla 
+                   
 
         #san andres
       #  dibujarPuntico(250,110)
@@ -313,6 +336,13 @@ def generarPilas(bandera):
                 SCREEN.blit(carta.valor.imagen, (carta.valor.x, carta.valor.y))
                 carta = carta.nodo_anterior 
     
+def mostrarConexiones():
+    for item in grafo.vertices:
+        vecinos = grafo.vertices[item].vecinos
+        for i in range(len(vecinos)-1):
+            tupla = buscarVertice(vecinos[i][0])
+            tupla2 = buscarVertice(vecinos[i+1][0])
+            pygame.draw.line(SCREEN, "black", tupla, tupla2, width=1)
 
 #ARBOLES 
 
@@ -335,8 +365,7 @@ def generate_tree (a):
     if banderaAñadir and banderaArbol:
         if arbol.length != None:
             estructuraArbol(arbol.length)
-        # aqui logica de dibujar arbol binario 
-#50,56,54,57,45,44,46
+        
 def crearArbol(texto):
     arboles = texto.split(',')
     for item in arboles:
@@ -370,9 +399,6 @@ def estructuraArbol (numero):
             dibujarNodo(listaCirculos[i][0], listaCirculos[i][1])
             SCREEN.blit (nodosDibujar[i], (listaCirculos[i][0]+300, listaCirculos[i][1]))
             
-#24,23,12,1,56
-#23,12,15,24,50
-#23,12,25,46
 def eliminarUltimosNone(lista):
     item = lista[len(lista)-1] 
     while item == None:
@@ -406,22 +432,6 @@ def dibujarNodo(i, j):
     pygame.draw.circle (SCREEN, "white", (i+dimension+(radio/2),j+(radio/2)),radio, 5)
 textocambio = ""
 
-def unirPuntos(lista):
-    for i in range(len(lista[0])-1):
-        tupla = buscarVertice(lista[0][i])
-        tupla2 = buscarVertice(lista[0][i+1])
-        pygame.draw.line(SCREEN, "black", tupla, tupla2, width=5)
-
-
-def buscarVertice(elemento):
-    tupla = ()
-    for item in grafo.vertices:
-        if elemento == item:
-            tupla = (grafo.vertices[item].x+10, grafo.vertices[item].y+50)
-            return tupla 
-
-    
-        
 
 
 #INTERFAZ 
@@ -446,8 +456,7 @@ banderaArbol = False
 banderaGrafos = False 
 ci1= None
 ci2 = None
-primeraCiudad= None
-segundaCiudad= None
+banderaConecciones = False 
 ciudadOrigen = None
 ciudadDestino = None
 listaGrafos = None 
@@ -466,6 +475,8 @@ while True:
         if (e.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and
                 e.ui_object_id == '#inputcambio' and banderaGrafos):
                     textocambio = e.text
+        else:
+            textocambio =""
         manager2.process_events(e)
         
         if e.type== MOUSEBUTTONDOWN and e.button== 1:
@@ -486,10 +497,9 @@ while True:
                 banderaGrafos = True
                 banderaArbol = False
                 bandera= False 
-            if pila1.collidepoint(mouse.get_pos()):
-                bandera=True
-                banderaArbol= False
             if banderaGrafos:
+                    if verConnecciones.collidepoint(mouse.get_pos()):
+                        banderaConecciones = True 
                     banderaArbol = False
                     dd.active = True
                     ddestino.active = True
@@ -505,8 +515,10 @@ while True:
                     if destino >= 0:
                         ddestino.main = ddestino.options[destino]
                         ciudadDestino = destino
-                        if ciudadOrigen != None:
+                        if ciudadOrigen != None and ciudadOrigen != -1:
                             listaGrafos =hacerDijkstra(ciudadOrigen, ciudadDestino)
+                        destino = -1
+                        ciudadOrigen = -1
                     if ci1 >= 0:
                         ciudad1.main = ciudad1.options[ci1]
                         primeraCiudad= ci1
@@ -521,7 +533,15 @@ while True:
                     if selected_option >= 0:
                         dropRecorridos.main = dropRecorridos.options[selected_option]
                         opcion = selected_option
+                    ciudad1.active = False
+                    ciudad2.active= False 
             if bandera:
+                    dd.active = False
+                    ddestino.active = False
+                    ciudad1.active = False
+                    ciudad2.active = False 
+                    dropRecorridos.active = False 
+                    banderaArbol= False 
                     for pila in pilas:
                             if pila.rect.collidepoint(mouse.get_pos()) :
                                 if seleccion:
@@ -541,11 +561,12 @@ while True:
                                         else:
                                             print('no puede')
                                             break 
+            if pila1.collidepoint(mouse.get_pos()):
+                bandera=True
+                banderaArbol= False
                 
-
-
              
-    generateGraphs(banderaGrafos,textocambio)
+    generateGraphs(banderaGrafos,textocambio, banderaConecciones)
     generate_tree(a)
     generarPilas(bandera)
     dd.draw(SCREEN, dd.active)   
@@ -565,3 +586,7 @@ while True:
     
 
 
+#24,23,12,1,56
+#23,12,15,24,50
+#23,12,25,46
+#50,56,54,57,45,44,46
